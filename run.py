@@ -10,7 +10,7 @@ def get_args():
     parser.add_argument('-r', '--run', action='store_true')
     parser.add_argument('-c', '--context', type=int, required=True)
     parser.add_argument('-d', '--dimensions', type=int, required=True)
-    parser.add_argument('-i', '--iters', type=int)
+    parser.add_argument('-i', '--iterations', type=int)
     parser.add_argument('-f', '--filename', type=str, required=True)
     parser.add_argument('-o', '--output', type=int)
     return parser.parse_args()
@@ -18,7 +18,7 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    m.set_params(args.dimensions, args.context, args.iters)
+    m.set_params(args.dimensions, args.context, args.iterations)
     model = m.Transformer().to(m.device)
     if args.run:
         model.load_state_dict(m.torch.load(args.filename))
