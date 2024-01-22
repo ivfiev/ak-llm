@@ -11,6 +11,7 @@ eval_interval = 500
 learning_rate = 1e-3
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 eval_iters = 100
+n_blocks = 6
 
 file = open("input.txt", "r")
 content = file.read()
@@ -30,13 +31,15 @@ train_data = data[:n]
 val_data = data[n:]
 
 
-def set_params(dims, ctx, iters):
+def set_params(dims, ctx, iters, blocks):
     global n_embed
     global context_len
     global max_iters
+    global n_blocks
     n_embed = dims
     context_len = ctx
     max_iters = iters
+    n_blocks = blocks
 
 
 def get_batch(split):
@@ -117,12 +120,7 @@ class Transformer(nn.Module):
         self.token_embedding_table = nn.Embedding(vocab_size, n_embed)
         self.position_embedding_table = nn.Embedding(context_len, n_embed)
         self.blocks = nn.Sequential(
-            Block(),
-            Block(),
-            Block(),
-            Block(),
-            Block(),
-            Block(),
+            *[Block() for _ in range(n_blocks)],
             nn.LayerNorm(n_embed)
         )
         self.lm_head = nn.Linear(n_embed, vocab_size)

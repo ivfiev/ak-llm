@@ -13,12 +13,13 @@ def get_args():
     parser.add_argument('-i', '--iterations', type=int)
     parser.add_argument('-f', '--filename', type=str, required=True)
     parser.add_argument('-o', '--output', type=int)
+    parser.add_argument('-b', '--blocks', type=int)
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = get_args()
-    m.set_params(args.dimensions, args.context, args.iterations)
+    m.set_params(args.dimensions, args.context, args.iterations, args.blocks)
     model = m.Transformer().to(m.device)
     if args.run:
         model.load_state_dict(m.torch.load(args.filename))
