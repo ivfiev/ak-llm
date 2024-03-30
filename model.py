@@ -15,12 +15,12 @@ n_blocks = 6
 
 file = open("input.txt", "r")
 content = file.read()
+
+# tokenizers
 chars = sorted(list(set(content)))
 vocab_size = len(chars)
-
 stoi = {ch: i for i, ch in enumerate(chars)}
 itos = {i: ch for i, ch in enumerate(chars)}
-
 encode = lambda s: [stoi[ch] for ch in s]
 decode = lambda l: ''.join([itos[n] for n in l])
 
@@ -32,14 +32,18 @@ val_data = data[n:]
 
 
 def set_params(dims, ctx, iters, blocks):
-    global n_embed
-    global context_len
-    global max_iters
-    global n_blocks
+    global n_embed, context_len, max_iters, n_blocks
     n_embed = dims
     context_len = ctx
     max_iters = iters
     n_blocks = blocks
+
+
+def set_tokenizer(enc, dec, vocab):
+    global encode, decode, vocab_size
+    encode = enc
+    decode = dec
+    vocab_size = vocab
 
 
 def get_batch(split):
