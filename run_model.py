@@ -1,6 +1,8 @@
 import model as m
 import argparse
 
+import tokenizer
+
 
 def get_args():
     parser = argparse.ArgumentParser(
@@ -14,13 +16,24 @@ def get_args():
     parser.add_argument('-f', '--filename', type=str, required=True)
     parser.add_argument('-o', '--output', type=int)
     parser.add_argument('-b', '--blocks', type=int)
+    parser.add_argument('-k', '--tokenizer')
     return parser.parse_args()
 
 
 if __name__ == '__main__':
     args = get_args()
     m.set_params(args.dimensions, args.context, args.iterations, args.blocks)
+
+    if args.tokenizer:
+        enc, dec, voc = tokenizer.load_tokenizer(args.tokenizer)
+        m.set_tokenizer(enc, dec, voc)
+        print(f'Configured custom tokenizer {args.tokenizer} with vocab_size {voc}.')
+    else:
+        print('Using default character-based tokenizer.')
+
+    m.init()
     model = m.Transformer().to(m.device)
+
     if args.run:
         model.load_state_dict(m.torch.load(args.filename))
         model.eval()

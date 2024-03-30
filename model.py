@@ -16,7 +16,7 @@ n_blocks = 6
 file = open("input.txt", "r")
 content = file.read()
 
-# tokenizers
+# default tokenizer
 chars = sorted(list(set(content)))
 vocab_size = len(chars)
 stoi = {ch: i for i, ch in enumerate(chars)}
@@ -24,11 +24,10 @@ itos = {i: ch for i, ch in enumerate(chars)}
 encode = lambda s: [stoi[ch] for ch in s]
 decode = lambda l: ''.join([itos[n] for n in l])
 
-data = torch.tensor(encode(content), dtype=torch.long, device=device)
-
-n = int(0.9 * len(data))
-train_data = data[:n]
-val_data = data[n:]
+data = None
+n = 0
+train_data = None
+val_data = None
 
 
 def set_params(dims, ctx, iters, blocks):
@@ -44,6 +43,14 @@ def set_tokenizer(enc, dec, vocab):
     encode = enc
     decode = dec
     vocab_size = vocab
+
+
+def init():
+    global data, n, train_data, val_data
+    data = torch.tensor(encode(content), dtype=torch.long, device=device)
+    n = int(0.9 * len(data))
+    train_data = data[:n]
+    val_data = data[n:]
 
 
 def get_batch(split):
